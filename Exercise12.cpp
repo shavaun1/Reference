@@ -52,4 +52,43 @@ int main() {
 	//r1 = 0;							//r1 is not const; i is now 0
 	//r2 = 0;						//error: r2 is a reference to const	
 
+	int i = 0, & r = i;
+	auto a = r;						//a is an int(r is an alias for i, which has type int)
+
+	const int ci = i, & cr = ci;
+	auto b = ci;					//b is an int(top-level const ci is dropped)
+	auto c = cr;					//c is an int(cr is an alis for ci whose const is top-evel)
+	auto d = &i;					//d is an int*(& of an int object is int*)
+	auto e = &ci;					//e is a const int*(& of a const object is low-level const)
+
+	const auto f = ci;				//deduced type of ci is int; f has type constant
+
+	auto& g = ci;					//g is a cost int& that is bound to ci
+	//auto& h = 42;					//error: we can't bind a plain reference to a literal 
+	const auto& j = 42;				//ok: we can bind a const reference to a literal
+
+	//auto k = ci; &l = i;			//k is int; l is int&
+	auto& m = ci, * p = &ci;		//m is a const int&; p is a pointer to const int
+	//auto &n = i; *p2 = &ci;		//error: type deduced from i is int; type deduced from &ci is
+									//const int 
+
+	//decltype(f()) sum = x;			//sum has whatever type f returns
+
+	const int ci = 0, & cj = ci;
+	decltype(ci) x = 0;				//x has type const int
+	decltype(cj) y = x;				//y has type const int& and and is bound to x
+	//decltype(cj) z;					//error: z is a reference and must be initialized
+
+	//decltype of an expression can be a reference type
+	int i = 42, * p = &i, & r = i;
+	decltype(r + 0) b;				//ok: addition yields an int; b is an (uninitialized) int
+	//decltype(*p) c;					//error: c is int& and must be initialized
+
+	//decltype of a parenthesized variable is always a reference
+	//decltype((i)) d;				//error: d is int& and must be initialized
+	decltype(i) e;					//ok: e is an (uninitialized) int
+
+	//Remember that decltype((variable)) (note, double parentheses) is always,
+	//a reference type, but decltype(variable) is a reference type only if variable is reference
+
 }
